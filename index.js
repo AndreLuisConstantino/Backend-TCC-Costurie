@@ -22,7 +22,10 @@ const cors = require('cors')
 //Dependencia para gerenciar o corpo de requisições da API
 const bodyParser = require('body-parser')
 
-//Cria um objeto com as características do express
+/* Imports Controllers */
+const usuarioController = require('./controller/usuarioController.js')
+
+//Cria um objeto com as características do expresponses
 const app = express()
 
 //Permissões do cors
@@ -41,12 +44,44 @@ app.use((request, response, next) => {
 //Define que os dados que iram chegar na requisição será no padrão JSON
 const bodyParserJSON = bodyParser.json()
 
-//Instanciacão de um servidor em http e a criacão de im IO
+//Instanciacão de um servidor em http e a criacão de um IO
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-app.get('/test', cors(), async (req, res) => {
-     
-})
+    /* Usuário */
+    //Endpoint para cadastrar um Usuário 
+    app.post('/usuario/cadastro', cors(), bodyParserJSON, async (request, response) => {
+        let contentType = request.headers['content-type']
 
-app.listen(8080, () => console.log('Servidor rodando na porta 8080'))
+        if (String(contentType).toLowerCase() == 'application/json') {
+            //Recebe os dados encaminhados na requisição
+            let dadosBody = request.body
+
+            let resultDadosUsuario = await usuarioController.insertUsuario(dadosBody)
+
+            response.status(resultDadosUsuario.status)
+            response.json(resultDadosUsuario)
+        } else {
+            response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+            response.json(message.ERROR_INVALID_CONTENT_TYPE)
+        }
+    })
+
+    //Endpoint para autenticar o Usuário
+    app.get('/usuario/login', cors(), bodyParserJSON,async (request, response) => {
+        let dadosLogin = request.body
+
+        let dadosResponseultLogin = await usuarioController.selectUserByLogin(dadosLogin)
+
+        if(dadosResponseultLogin) {
+            response.status(dadosLogin.status)
+            response.json(dadosResponseultLogin)
+        } else {
+            response.status(400)
+            response.json({message: 'Não foi possivel fazer o Login'})
+        }
+    })
+
+
+
+app.listen(3000, () => console.log('Servidor rodando na porta 8080'))
