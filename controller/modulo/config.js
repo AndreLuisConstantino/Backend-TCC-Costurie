@@ -20,6 +20,8 @@ const ERROR_DELETED_ITEM = {status: 404, message: 'O item não pode ser excluido
 
 const ERROR_ITEM_NOT_FOUND = {status: 404, message: 'O item não pode ser encontrado na requisição.'}
 
+const ERROR_EMAIL_ALREADY_EXISTS = {status: 400, message: 'O email já existe em nosso sistema'}
+
 /******************************** MENSAGENS DE SUCESSO **********************************************/
 const SUCCESS_CREATED_ITEM = {status: 201, message: 'Item criado com sucesso.'}
 
@@ -42,5 +44,6 @@ module.exports = {
     SUCCESS_DELETED_ITEM,
     ERROR_DELETED_ITEM,
     ERROR_ITEM_NOT_FOUND,
-    SUCCES_REQUEST
+    SUCCES_REQUEST,
+    ERROR_EMAIL_ALREADY_EXISTS 
 }

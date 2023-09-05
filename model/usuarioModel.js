@@ -43,12 +43,24 @@ const selectLastIDModel = async () => {
 }
 
 const selectUserByLoginModel = async (dadosLogin) => {
-    let sql = ``
+    let sql = `select tbl_usuario.id ,tbl_usuario.nome_de_usuario, tbl_usuario.email from tbl_usuario where tbl_usuario.email = '${dadosLogin.email}' and tbl_usuario.senha = '${dadosLogin.senha}'`
+
+    let response = await prisma.$queryRawUnsafe(sql)
+
+    if(response.length > 0){
+        return response
+    } else {
+        return false
+    }
+}
+
+const selectUserByEmail = async (email) => {
+    let sql = `select tbl_usuario.id, tbl_usuario.nome_de_usuario, tbl_usuario.email from tbl_usuario where tbl_usuario.email = '${email}';`
 
     let rsAluno = await prisma.$queryRawUnsafe(sql)
 
     if(rsAluno.length > 0){
-        return rsAluno
+        return true
     } else {
         return false
     }
@@ -57,5 +69,6 @@ const selectUserByLoginModel = async (dadosLogin) => {
 module.exports = {
     insertUsuarioModel,
     selectLastIDModel,
-    selectUserByLoginModel
+    selectUserByLoginModel,
+    selectUserByEmail
 }

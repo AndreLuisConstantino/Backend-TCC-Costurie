@@ -69,17 +69,26 @@ const io = require('socket.io')(server);
 
     //Endpoint para autenticar o Usuário
     app.get('/usuario/login', cors(), bodyParserJSON,async (request, response) => {
-        let dadosLogin = request.body
+        let contentType = request.headers['content-type']
 
-        let dadosResponseultLogin = await usuarioController.selectUserByLogin(dadosLogin)
+        if (String(contentType).toLowerCase() == 'application/json') {
+            let dadosLogin = request.body
 
-        if(dadosResponseultLogin) {
-            response.status(dadosLogin.status)
-            response.json(dadosResponseultLogin)
+            let dadosResponseLogin = await usuarioController.selectUserByLogin(dadosLogin)
+
+            if(dadosResponseLogin) {
+                response.status(dadosResponseLogin.status)
+                response.json(dadosResponseLogin)
+            } else {
+                response.status(400)
+                response.json({message: 'Não foi possivel fazer o Login'})
+            }
         } else {
-            response.status(400)
-            response.json({message: 'Não foi possivel fazer o Login'})
+            response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+            response.json(message.ERROR_INVALID_CONTENT_TYPE)
         }
+        
+        
     })
 
 

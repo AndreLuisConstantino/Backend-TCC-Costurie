@@ -20,22 +20,32 @@ const insertUsuario = async (dadosUsuario) => {
             return message.ERROR_REQUIRED_FIELDS   
 
     } else {
-        let resultDadosUsuario = await usuarioModel.insertUsuarioModel(dadosUsuario)
 
-        //Valida se o BD inseriu corretamente os dados
-        if (resultDadosUsuario) {
+        let resultEmail = await usuarioModel.selectUserByEmail(dadosUsuario.email)
 
-            //Chama a função que vai encontrar o ID gerado após o inser
-            let novoUsuario = await usuarioModel.selectLastIDModel()
-
-            let dadosUsuarioJson = {}
-            dadosUsuarioJson.status = message.SUCCESS_CREATED_ITEM.status
-            dadosUsuarioJson.aluno = novoUsuario
-
-            return dadosUsuarioJson //StatusCode 201
+        if (resultEmail) {
+            return message.ERROR_EMAIL_ALREADY_EXISTS
         } else {
-            return message.ERROR_INTERNAL_SERVER //StatusCode 500
+            
+            let resultDadosUsuario = await usuarioModel.insertUsuarioModel(dadosUsuario)
+
+            //Valida se o BD inseriu corretamente os dados
+            if (resultDadosUsuario) {
+
+                //Chama a função que vai encontrar o ID gerado após o inser
+                let novoUsuario = await usuarioModel.selectLastIDModel()
+
+                let dadosUsuarioJson = {}
+                dadosUsuarioJson.status = message.SUCCESS_CREATED_ITEM.status
+                dadosUsuarioJson.aluno = novoUsuario
+
+                return dadosUsuarioJson //StatusCode 201
+            } else {
+                return message.ERROR_INTERNAL_SERVER //StatusCode 500
+            }
         }
+
+        
     }
 }
 
@@ -50,7 +60,7 @@ const selectUserByLogin = async (dadosLogin) => {
 
         if (login) {
             let dadosLoginJson = {}
-            dadosLoginJson = login
+            dadosLoginJson.login = login
             dadosLoginJson.status = 200
             return dadosLoginJson
         } else {
@@ -60,5 +70,6 @@ const selectUserByLogin = async (dadosLogin) => {
 }
 
 module.exports = {
-    insertUsuario
+    insertUsuario,
+    selectUserByLogin
 }
