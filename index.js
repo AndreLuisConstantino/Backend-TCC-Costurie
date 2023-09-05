@@ -48,9 +48,24 @@ const bodyParserJSON = bodyParser.json()
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
+    //Receber o token encaminhado nas requisicões e solicitar a validacão
+    const verifyJWT = async (request, response, next) => {
+        const jwt = require('./middleware/middlewareJWT.js')
+
+        let token = request.headers['x-access-token']
+
+        const autenticidadeToken = await jwt.validateJWT(token)
+
+        if(autenticidadeToken) {
+            next()
+        } else {
+            return response.status(401).end()
+        }
+    }
+
     /* Usuário */
     //Endpoint para cadastrar um Usuário 
-    app.post('/usuario/cadastro', cors(), bodyParserJSON, async (request, response) => {
+    app.post('/usuario/cadastro', verifyJWT,cors(), bodyParserJSON, async (request, response) => {
         let contentType = request.headers['content-type']
 
         if (String(contentType).toLowerCase() == 'application/json') {
@@ -74,23 +89,25 @@ const io = require('socket.io')(server);
         if (String(contentType).toLowerCase() == 'application/json') {
             let dadosLogin = request.body
 
-            let dadosResponseLogin = await usuarioController.selectUserByLogin(dadosLogin)
+            let token = request.headers['x-access-token'] 
 
+            let dadosResponseLogin = await usuarioController.selectUserByLogin(dadosLogin)
             if(dadosResponseLogin) {
                 response.status(dadosResponseLogin.status)
                 response.json(dadosResponseLogin)
             } else {
                 response.status(400)
                 response.json({message: 'Não foi possivel fazer o Login'})
-            }
+            }    
         } else {
             response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
             response.json(message.ERROR_INVALID_CONTENT_TYPE)
         }
-        
-        
     })
 
-
+    app.get('/usuario/token', verifyJWT, cors(), bodyParserJSON, async (request, response) => {
+        response.status(200)
+        response.json({'Validate': 'Validado, pode usar o app ;)', status: true})
+    })
 
 app.listen(3000, () => console.log('Servidor rodando na porta 8080'))

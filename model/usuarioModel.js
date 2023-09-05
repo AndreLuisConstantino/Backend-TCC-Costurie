@@ -32,10 +32,10 @@ const selectLastIDModel = async () => {
                     tbl_usuario.email  
                 from tbl_usuario order by id desc limit 1;`
 
-    let rsAluno = await prisma.$queryRawUnsafe(sql)
+    let response = await prisma.$queryRawUnsafe(sql)
 
-    if(rsAluno.length > 0){
-        return rsAluno
+    if(response.length > 0){
+        return response
     } else {
         return false
     }

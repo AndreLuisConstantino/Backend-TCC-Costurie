@@ -56,12 +56,19 @@ const selectUserByLogin = async (dadosLogin) => {
             return message.ERROR_REQUIRED_FIELDS
     } else {
 
+        //Import JWT
+        const jwt = require('../middleware/middlewareJWT.js')
+
         let login = await usuarioModel.selectUserByLoginModel(dadosLogin)
 
         if (login) {
+            //Gera o token pelo jwt
+            let tokenUser = await jwt.createJWT(login[0].id)
+
             let dadosLoginJson = {}
             dadosLoginJson.login = login
             dadosLoginJson.status = 200
+            dadosLoginJson.token = tokenUser
             return dadosLoginJson
         } else {
             return message.ERROR_ITEM_NOT_FOUND
