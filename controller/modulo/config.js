@@ -22,6 +22,8 @@ const ERROR_ITEM_NOT_FOUND = {status: 404, message: 'O item não pode ser encont
 
 const ERROR_EMAIL_ALREADY_EXISTS = {status: 400, message: 'O email já existe em nosso sistema'}
 
+const ERROR_EMAIL_NOT_FOUND = {status: 404, message: 'O email não foi encontrado em nosso sistema'}
+
 const ERROR_INVALID_WEB_TOKEN = {status: 401, message: 'O token encaminhado na requisicão não está valido'}
 
 /******************************** MENSAGENS DE SUCESSO **********************************************/
@@ -32,6 +34,8 @@ const SUCCESS_UPDATED_ITEM = {status: 200, message: 'Item atualizado com sucesso
 const SUCCESS_DELETED_ITEM = {status: 200, message: 'Item excluido com sucesso.'}
 
 const SUCCES_REQUEST = {status: 200, message: 'Requisição bem secedida'}
+
+const SUCCESS_EMAIL_FOUND = {status: 200, message: 'Email encontrado com sucesso.'}
 
 
 
@@ -48,5 +52,7 @@ module.exports = {
     ERROR_ITEM_NOT_FOUND,
     SUCCES_REQUEST,
     ERROR_EMAIL_ALREADY_EXISTS,
-    ERROR_INVALID_WEB_TOKEN
+    ERROR_INVALID_WEB_TOKEN,
+    SUCCESS_EMAIL_FOUND,
+    ERROR_EMAIL_NOT_FOUND
 }

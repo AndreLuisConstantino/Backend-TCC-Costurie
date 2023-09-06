@@ -21,7 +21,7 @@ const insertUsuario = async (dadosUsuario) => {
 
     } else {
 
-        let resultEmail = await usuarioModel.selectUserByEmail(dadosUsuario.email)
+        let resultEmail = await usuarioModel.selectUserByEmailModel(dadosUsuario.email)
 
         if (resultEmail) {
             return message.ERROR_EMAIL_ALREADY_EXISTS
@@ -76,7 +76,21 @@ const selectUserByLogin = async (dadosLogin) => {
     }
 }
 
+const getUserByEmail = async (dadosEmail) => {
+
+    let resultEmail = await usuarioModel.selectUserByEmailModel(dadosEmail)
+
+    if (resultEmail) {
+        let dadosEmailJson = {}
+        dadosEmailJson.email = resultEmail
+        return dadosEmailJson
+    } else {
+        return false
+    }
+}
+
 module.exports = {
     insertUsuario,
-    selectUserByLogin
+    selectUserByLogin,
+    getUserByEmail
 }

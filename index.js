@@ -65,7 +65,7 @@ const io = require('socket.io')(server);
 
     /* Usuário */
     //Endpoint para cadastrar um Usuário 
-    app.post('/usuario/cadastro', verifyJWT,cors(), bodyParserJSON, async (request, response) => {
+    app.post('/usuario/cadastro', cors(), bodyParserJSON, async (request, response) => {
         let contentType = request.headers['content-type']
 
         if (String(contentType).toLowerCase() == 'application/json') {
@@ -89,8 +89,6 @@ const io = require('socket.io')(server);
         if (String(contentType).toLowerCase() == 'application/json') {
             let dadosLogin = request.body
 
-            let token = request.headers['x-access-token'] 
-
             let dadosResponseLogin = await usuarioController.selectUserByLogin(dadosLogin)
             if(dadosResponseLogin) {
                 response.status(dadosResponseLogin.status)
@@ -108,6 +106,37 @@ const io = require('socket.io')(server);
     app.get('/usuario/token', verifyJWT, cors(), bodyParserJSON, async (request, response) => {
         response.status(200)
         response.json({'Validate': 'Validado, pode usar o app ;)', status: true})
+    })
+
+    app.get('/usuario/esqueci_a_senha', cors(), bodyParserJSON, async (request, response) => {
+        let email = request.body
+
+        let resultUserEmail = await usuarioController.getUserByEmail(email)
+
+        if (resultUserEmail) {
+
+            let nodemailer = require('./module/secret.js')
+
+            let smtp = nodemailer.smtp
+
+            let mailOptions = {
+                from: 'tcccosturie@gmail.com',
+                to: email.email,
+                replyTo: email,
+                subject: "Olá Bem vindo!",
+                text: 'Olá faça a sua redefinição de senha aqui',
+                template: 'index'
+            }
+
+            smtp.sendMail(mailOptions).then(info => {
+                response.send(info)
+            }).catch(error => {
+                response.send(error)
+            })
+        } else {
+            response.status(message.ERROR_EMAIL_NOT_FOUND.status)
+            response.json(message.ERROR_EMAIL_NOT_FOUND)
+        }
     })
 
 app.listen(3000, () => console.log('Servidor rodando na porta 8080'))
