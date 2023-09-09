@@ -31,12 +31,12 @@ const smtp = nodemailer.createTransport({
 
 smtp.use('compile', hbs({
     viewEngine: {
-        extName: ".html",
+        extName: ".hbs",
         partialsDir: path.resolve('./views'),
         defaultLayout: false
       },
       viewPath: path.resolve('./views'),
-      extName: ".html"
+      extName: ".hbs"
 }))
 
 module.exports = {

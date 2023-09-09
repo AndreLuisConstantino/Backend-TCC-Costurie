@@ -20,11 +20,17 @@ const ERROR_DELETED_ITEM = {status: 404, message: 'O item não pode ser excluido
 
 const ERROR_ITEM_NOT_FOUND = {status: 404, message: 'O item não pode ser encontrado na requisição.'}
 
+const ERROR_USER_NOT_FOUND = {status: 404, message: 'O usuário não foi encontrado'}
+
 const ERROR_EMAIL_ALREADY_EXISTS = {status: 400, message: 'O email já existe em nosso sistema'}
 
 const ERROR_EMAIL_NOT_FOUND = {status: 404, message: 'O email não foi encontrado em nosso sistema'}
 
-const ERROR_INVALID_WEB_TOKEN = {status: 401, message: 'O token encaminhado na requisicão não está valido'}
+const ERROR_INVALID_WEB_TOKEN = {status: 401, message: 'O webtoken encaminhado na requisicão não está valido'}
+
+const ERROR_UNABLE_TO_UPDATE = {status: 401, message: 'O token encaminhado na requisicão não está valido'}
+
+const ERROR_INVALID_TOKEN = {status: 401, message: 'O token encaminhado na requisicão não está valido'}
 
 /******************************** MENSAGENS DE SUCESSO **********************************************/
 const SUCCESS_CREATED_ITEM = {status: 201, message: 'Item criado com sucesso.'}
@@ -54,5 +60,8 @@ module.exports = {
     ERROR_EMAIL_ALREADY_EXISTS,
     ERROR_INVALID_WEB_TOKEN,
     SUCCESS_EMAIL_FOUND,
-    ERROR_EMAIL_NOT_FOUND
+    ERROR_EMAIL_NOT_FOUND,
+    ERROR_UNABLE_TO_UPDATE,
+    ERROR_INVALID_TOKEN,
+    ERROR_USER_NOT_FOUND
 }
