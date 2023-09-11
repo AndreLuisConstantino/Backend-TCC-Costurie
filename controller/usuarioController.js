@@ -186,11 +186,7 @@ const updateUserPassword = async (dadosBody) => {
 }
 
 const updateUserProfile = async (dadosBody) => {
-  if (dadosBody.nome == undefined || !isNaN(dadosBody.nome) ||
-      dadosBody.foto == undefined || !isNaN(dadosBody.foto) ||
-      dadosBody.descricao == undefined || !isNaN(dadosBody.descricao)) {
-    return message.ERROR_MISTAKE_IN_THE_FILDS
-  } else if (dadosBody.id == ''|| dadosBody.id == undefined || isNaN(dadosBody.id)){
+  if (dadosBody.id == ''|| dadosBody.id == undefined || isNaN(dadosBody.id)){
     return message.ERROR_INVALID_ID
   } else {
     let dadosUpdatePersonalizarPerfil = usuarioModel.dadosUpdatePersonalizarPerfilModel(dadosBody)
