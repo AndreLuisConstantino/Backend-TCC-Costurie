@@ -70,11 +70,7 @@ const selectUserByEmailModel = async (dadosEmail) => {
 }
 
 const selectUserByIdModel = async (id) => {
-    let sql = `select 
-                    tbl_usuario.id as id_usuario, 
-                    tbl_usuario.nome_de_usuario as tag_usuario, 
-                    tbl_usuario.email  
-                from tbl_usuario where id = ${id}`
+    let sql = `select * from tbl_usuario where id = ${id}`
 
     let response = await prisma.$queryRawUnsafe(sql)
 
@@ -118,6 +114,34 @@ const selectTokenAndIdModel = async (dadosBody) => {
     }
 }
 
+const updateUserPasswordModel = async (dadosBody) => {
+    //Script sql para atualizar os dados no BD
+    let sql = `update tbl_usuario set senha = '${dadosBody.senha}' where id = ${dadosBody.id};`
+
+    //Executa o script no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return resultStatus
+    } else {
+        return false
+    }
+}
+
+const dadosUpdatePersonalizarPerfilModel = async (dadosBody) => {
+    //Script sql para atualizar os dados no BD
+    let sql = `update tbl_usuario set nome = '${dadosBody.nome}', descricao = '${dadosBody.descricao}', foto = '${dadosBody.foto}' where id = ${dadosBody.id};`
+
+    //Executa o script no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql)
+
+    if (resultStatus) {
+        return resultStatus
+    } else {
+        return false
+    }
+}
+
 module.exports = {
     insertUsuarioModel,
     selectLastIDModel,
@@ -125,5 +149,7 @@ module.exports = {
     selectUserByEmailModel,
     selectUserByIdModel,
     updateUserTokenAndExpiresModel,
-    selectTokenAndIdModel
+    selectTokenAndIdModel,
+    updateUserPasswordModel,
+    dadosUpdatePersonalizarPerfilModel
 }

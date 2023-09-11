@@ -106,11 +106,13 @@ app.get('/usuario/login', cors(), bodyParserJSON, async (request, response) => {
     }
 })
 
+//Endpoint para a validação de token JWT
 app.get('/usuario/token', verifyJWT, cors(), bodyParserJSON, async (request, response) => {
     response.status(200)
     response.json({ 'Validate': 'Validado, pode usar o app ;)', status: true })
 })
 
+//Endpoint para enviar email no esqueci a senha
 app.get('/usuario/esqueci_a_senha', cors(), bodyParserJSON, async (request, response) => {
 
     let email = request.body
@@ -157,6 +159,7 @@ app.get('/usuario/esqueci_a_senha', cors(), bodyParserJSON, async (request, resp
     }
 })
 
+//Endpoint para a validação do token gerado no esqueci a senha
 app.get('/usuario/validar_token', cors(), bodyParserJSON, async (request, response) => {
     let contentType = request.headers['content-type']
 
@@ -176,8 +179,53 @@ app.get('/usuario/validar_token', cors(), bodyParserJSON, async (request, respon
         response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
         response.json(message.ERROR_INVALID_CONTENT_TYPE)
     }
-
-
 })
 
-app.listen(3000, () => console.log('Servidor rodando na porta 8080'))
+app.put('/usuario/atualizar_senha', cors(), bodyParserJSON, async (request, response) => {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let dadosBody = request.body
+
+        let dadosUpdateSenha = await usuarioController.updateUserPassword(dadosBody)
+
+        if (dadosUpdateSenha) {
+            response.status(dadosUpdateSenha.status)
+            response.json(dadosUpdateSenha)
+        } else {
+            response.status(dadosUpdateSenha.status)
+            response.json(dadosUpdateSenha)
+        }
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+    
+})
+
+/* Personalização de perfil */
+app.put('/usuario/personalizar_perfil', cors(), bodyParserJSON, async (request, response) => {
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type']
+    
+    if (String(contentType).toLowerCase() == 'application/json') {
+        let dadosBody = request.body
+
+        let dadosUpdatePersonalizarPerfil = await usuarioController.updateUserProfile(dadosBody)
+
+        if (dadosUpdatePersonalizarPerfil) {
+            response.status(dadosUpdatePersonalizarPerfil.status)
+            response.json(dadosUpdatePersonalizarPerfil)
+        } else {
+            response.status(dadosUpdatePersonalizarPerfil.status)
+            response.json(dadosUpdatePersonalizarPerfil)
+        }
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status)
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+})
+
+app.listen(3000, () => console.log('Servidor rodando na porta 3000'))

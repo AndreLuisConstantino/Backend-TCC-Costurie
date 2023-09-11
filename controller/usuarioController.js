@@ -43,7 +43,7 @@ const insertUsuario = async (dadosUsuario) => {
 
         let dadosUsuarioJson = {};
         dadosUsuarioJson.status = message.SUCCESS_CREATED_ITEM.status;
-        dadosUsuarioJson.aluno = novoUsuario;
+        dadosUsuarioJson.aluno = novoUsuario[0];
 
         return dadosUsuarioJson; //StatusCode 201
       } else {
@@ -74,7 +74,7 @@ const selectUserByLogin = async (dadosLogin) => {
       let tokenUser = await jwt.createJWT(login[0].id);
 
       let dadosLoginJson = {};
-      dadosLoginJson.login = login;
+      dadosLoginJson.login = login[0];
       dadosLoginJson.status = 200;
       dadosLoginJson.token = tokenUser;
       return dadosLoginJson;
@@ -124,11 +124,9 @@ const selectTokenById = async (dadosBody) => {
     return message.ERROR_MISTAKE_IN_THE_FILDS
   } else {
 
-    
-    
+  
     let resultUser = await usuarioModel.selectUserByIdModel(dadosBody.id)
 
-    
 
     if (resultUser) {
 
@@ -141,13 +139,14 @@ const selectTokenById = async (dadosBody) => {
       // console.log(dataArray[2]);
 
       let now = new Date()
-;
-      let dataFormatada = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+
+      console.log(now);
+;    let dataFormatada = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
       
       if (dataArray[2] < dataFormatada) {
 
         let dadosTokenJson = {}
-        dadosTokenJson.usuario = resultToken
+        dadosTokenJson.usuario = resultToken[0]
         dadosTokenJson.message = 'O Token está válido e apto para a troca de senha'
         dadosTokenJson.status = 200
 
@@ -161,10 +160,61 @@ const selectTokenById = async (dadosBody) => {
   }
 }
 
+const updateUserPassword = async (dadosBody) => {
+
+  if (dadosBody.senha == '' || dadosBody.senha == undefined || dadosBody.senha.length > 515 || !isNaN(dadosBody.senha)) {
+    return message.ERROR_MISTAKE_IN_THE_FILDS
+  } else if (dadosBody.id == '' || dadosBody.id == undefined || isNaN(dadosBody.id)){
+    return message.ERROR_INVALID_ID
+  } else {
+
+    let dadosUpdateSenha = await usuarioModel.updateUserPasswordModel(dadosBody)
+
+    if (dadosUpdateSenha) {
+
+      let usuarioAtualizado = await usuarioModel.selectUserByIdModel(dadosBody.id)
+
+      let dadosUserJson = {}
+      dadosUserJson.user = usuarioAtualizado[0]
+      dadosUserJson.status = 200
+      dadosUserJson.message = 'Usuário atualizado com sucesso!'
+      return dadosUserJson
+    } else {
+      return message.ERROR_ITEM_NOT_FOUND
+    }
+  }
+}
+
+const updateUserProfile = async (dadosBody) => {
+  if (dadosBody.nome == undefined || !isNaN(dadosBody.nome) ||
+      dadosBody.foto == undefined || !isNaN(dadosBody.foto) ||
+      dadosBody.descricao == undefined || !isNaN(dadosBody.descricao)) {
+    return message.ERROR_MISTAKE_IN_THE_FILDS
+  } else if (dadosBody.id == ''|| dadosBody.id == undefined || isNaN(dadosBody.id)){
+    return message.ERROR_INVALID_ID
+  } else {
+    let dadosUpdatePersonalizarPerfil = usuarioModel.dadosUpdatePersonalizarPerfilModel(dadosBody)
+
+    if (dadosUpdatePersonalizarPerfil) {
+      let usuarioAtualizado = await usuarioModel.selectUserByIdModel(dadosBody.id)
+
+      let dadosUsuarioJson = {}
+      dadosUsuarioJson.usuario = usuarioAtualizado
+      dadosUsuarioJson.status = 200
+      dadosUsuarioJson.message = 'Usuário atualizado com sucesso!'
+      return dadosUsuarioJson
+    } else {
+      return message.ERROR_ITEM_NOT_FOUND
+    }
+  }
+}
+
 module.exports = {
   insertUsuario,
   selectUserByLogin,
   getUserByEmail,
   updateUserTokenAndExpires,
-  selectTokenById
+  selectTokenById,
+  updateUserPassword,
+  updateUserProfile
 };
