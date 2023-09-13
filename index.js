@@ -228,4 +228,6 @@ app.put('/usuario/personalizar_perfil', cors(), bodyParserJSON, async (request, 
     }
 })
 
+
+
 app.listen(3000, () => console.log('Servidor rodando na porta 3000'))
